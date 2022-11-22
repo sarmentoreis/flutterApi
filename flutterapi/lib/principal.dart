@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapi/post.dart';
 
 class Principal extends StatefulWidget {
   const Principal({Key? key}) : super(key: key);
@@ -12,9 +13,7 @@ class _PrincipalState extends State<Principal> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Projeto Final',
-      home: Scaffold(
-        appBar: AppBar(title: Text('Titulo')),
-      ),
+      home: PostNot(),
     );
   }
 }
