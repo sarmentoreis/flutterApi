@@ -1,21 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:async';
 import 'dart:convert';
 
-String URL = "https://httpbin.org/post";
+String URL = "http://slmm.com.br/CTC/";
 
-Future<String> fetchData() async {
-  Map data = {'nome': 'Leonardo', 'data': '04/10/2021 10:00'};
+Future<String> postData() async {
+  DateTime dataAgora = DateTime.now();
+  DateFormat teste = new DateFormat("yy/MM/dd HH:mm:ss");
+  Map data = {'nome': 'Marcus', 'data': teste.format(dataAgora)};
 
   String body = json.encode(data);
 
-  var response = await http.post(Uri.parse(URL),
+  var response = await http.post(Uri.parse(URL + "insere.php"),
       headers: {"Content-Type": "application/json"}, body: body);
   if (response.statusCode == 200) {
     return response.body;
   } else {
-    throw Exception('Erro inesperado');
+    throw Exception('POST ERROR.');
+  }
+}
+
+Future<String> fetchAll() async {
+  final response = await http.get(Uri.parse(URL + "getLista.php"));
+  if (response.statusCode == 200) {
+    print(jsonDecode(response.body));
+    return response.body;
+  } else {
+    throw Exception('FETCH ALL ERROR.');
+  }
+}
+
+Future<String> fetchOne(id) async {
+  final response = await http.get(Uri.parse(URL + "getDetalhe.php?id=" + id));
+  if (response.statusCode == 200) {
+    print(jsonDecode(response.body));
+    return response.body;
+  } else {
+    throw Exception('FETCH ALL ERROR.');
+  }
+}
+
+Future<String> delete(String id) async {
+  final response = await http.delete(Uri.parse(URL + "delete.php?id=" + id),
+      headers: {"Content-Type": "application/json"});
+  if (response.statusCode == 200) {
+    print(jsonDecode(response.body));
+    return response.body;
+  } else {
+    throw Exception('DELETE ERROR.');
   }
 }
 
@@ -49,14 +83,44 @@ class _PostNotState extends State<PostNot> {
         });
   }
 
-  ElevatedButton botao() {
+  ElevatedButton botaoPost() {
     return ElevatedButton(
         onPressed: () {
           setState(() {
-            _dadosF = fetchData();
+            _dadosF = postData();
           });
         },
         child: Text("enviar dados"));
+  }
+
+  ElevatedButton botaoGet() {
+    return ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _dadosF = fetchAll();
+          });
+        },
+        child: Text("Receber dados"));
+  }
+
+  ElevatedButton botaoGetOne(String id) {
+    return ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _dadosF = fetchOne(id);
+          });
+        },
+        child: Text("Receber dados"));
+  }
+
+  ElevatedButton botaoDelete(String id) {
+    return ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _dadosF = delete(id);
+          });
+        },
+        child: Text("Receber dados"));
   }
 
   @override
@@ -86,7 +150,7 @@ class _PostNotState extends State<PostNot> {
                 });
               },
               child: Text("Enviar")),
-          (_dadosF == null) ? botao() : buildFutureBuilder(),
+          (_dadosF == null) ? botaoPost() : buildFutureBuilder(),
         ]),
       ),
     );
