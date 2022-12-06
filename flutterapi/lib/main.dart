@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'principal.dart';
+import 'Crud.dart';
 
 void main() {
-  runApp(Principal());
+  runApp(const MaterialApp(title: 'Flutter QrCode', home: Crud()));
 }
